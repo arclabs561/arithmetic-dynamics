@@ -34,9 +34,6 @@ def iteration_digraph(p: int, c: int) -> nx.DiGraph:
 
     Each node x in {0, ..., p-1} has exactly one outgoing edge to f(x) mod p.
     This is a functional graph: out-degree is always 1.
-
-    graphops equivalent: build an adjacency list from a closure, then convert
-    to a DiGraph. graphops stores this as a CSR-style edge list.
     """
     G = nx.DiGraph()
     G.add_nodes_from(range(p))
@@ -49,36 +46,23 @@ def iteration_digraph(p: int, c: int) -> nx.DiGraph:
 
 
 def find_all_cycles(G: nx.DiGraph) -> list[list[int]]:
-    """Find all simple cycles in the iteration digraph.
-
-    graphops equivalent: Johnson's algorithm via graphops::algo::cycles,
-    or SCC decomposition followed by cycle enumeration within each SCC.
-    """
+    """Find all simple cycles in the iteration digraph."""
     return list(nx.simple_cycles(G))
 
 
 def find_fixed_points(G: nx.DiGraph) -> list[int]:
-    """Nodes where f(x) = x, i.e. self-loops.
-
-    graphops equivalent: filter the edge list for (u, u) pairs.
-    """
+    """Nodes where f(x) = x, i.e. self-loops."""
     return sorted(x for x in G.nodes() if G.has_edge(x, x))
 
 
 def component_sizes(G: nx.DiGraph) -> list[int]:
-    """Sizes of weakly connected components, sorted descending.
-
-    graphops equivalent: graphops::algo::wcc (union-find based).
-    """
+    """Sizes of weakly connected components, sorted descending."""
     components = list(nx.weakly_connected_components(G))
     return sorted((len(c) for c in components), reverse=True)
 
 
 def in_degree_distribution(G: nx.DiGraph) -> dict[int, int]:
-    """Map from in-degree k to count of nodes with that in-degree.
-
-    graphops equivalent: degree histogram from CSR column counts.
-    """
+    """Map from in-degree k to count of nodes with that in-degree."""
     return dict(sorted(Counter(d for _, d in G.in_degree()).items()))
 
 
